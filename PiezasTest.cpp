@@ -51,7 +51,26 @@ TEST(PiezasTest, place_4_pieces_1_row)
   obj.dropPiece(0);
   obj.dropPiece(0);
   obj.dropPiece(0);
-  ASSERT_EQ(Invalid, obj.dropPiece(0));
+  ASSERT_EQ(Blank, obj.dropPiece(0));
+}
+
+/*Tests dropPiece()*/
+TEST(PiezasTest, next_after_invalid)
+{
+  Piezas obj;
+  ASSERT_EQ(Invalid, obj.dropPiece(-1));
+  ASSERT_EQ(O, obj.dropPiece(0));
+}
+
+/*Tests dropPiece()*/
+TEST(PiezasTest, next_after_Blank)
+{
+  Piezas obj;
+  obj.dropPiece(0);
+  obj.dropPiece(0);
+  obj.dropPiece(0);
+  ASSERT_EQ(Blank, obj.dropPiece(0));
+  ASSERT_EQ(X, obj.dropPiece(1));
 }
 
 /*Tests dropPiece()*/

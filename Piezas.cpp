@@ -58,6 +58,11 @@ Piece Piezas::dropPiece(int column)
 {
    //Invalid entry
    if(column >= BOARD_COLS || column < 0){
+      if(turn == X){
+         turn = O;
+      }else{
+         turn = X;
+      }
       return Invalid;
    }
    //Place piece in bottom-up fashion
@@ -74,7 +79,12 @@ Piece Piezas::dropPiece(int column)
          }
       }
    }
-   return Invalid; //Column full
+   if(turn == X){
+      turn = O;
+   }else{
+      turn = X;
+   }
+   return Blank; //Column full
 }
 
 /**
