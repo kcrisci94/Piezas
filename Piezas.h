@@ -72,6 +72,7 @@ class Piezas
      * line, it is a tie.
     **/
   	Piece gameState();
+//    void printboard();
 };
 
 #endif /*_PIEZAS_H_*/
