@@ -1,4 +1,5 @@
 #include "Piezas.h"
+#include <iostream>
 #include <vector>
 /** CLASS Piezas
  * Class for representing a Piezas vertical board, which is roughly based
@@ -20,8 +21,16 @@
  * Constructor sets an empty board (default 3 rows, 4 columns) and 
  * specifies it is X's turn first
 **/
-Piezas::Piezas()
-{
+Piezas::Piezas(){
+  turn = X;
+  board.resize(BOARD_ROWS);
+  for(int i = 0; i < BOARD_ROWS; i++){
+     board[i].resize(BOARD_COLS);
+     for(int j = 0; j < BOARD_COLS; j++){
+        board[i][j] = Blank;
+     }
+  }
+
 }
 
 /**
@@ -30,6 +39,11 @@ Piezas::Piezas()
 **/
 void Piezas::reset()
 {
+  for(int i = 0; i < BOARD_ROWS; i++){
+     for(int j = 0; j < BOARD_COLS; j++){
+        board[i][j] = Blank;
+     }
+  }
 }
 
 /**
@@ -42,7 +56,25 @@ void Piezas::reset()
 **/ 
 Piece Piezas::dropPiece(int column)
 {
-    return Blank;
+   //Invalid entry
+   if(column >= BOARD_COLS || column < 0){
+      return Invalid;
+   }
+   //Place piece in bottom-up fashion
+   for(int i = BOARD_ROWS-1; i >= 0; i--){
+      if(board[i][column] == Blank){
+         board[i][column] = turn;
+         //Switch turn
+         if(turn == X){
+            turn = O;
+            return X;
+         }else{
+            turn = X;
+            return O;
+         }
+      }
+   }
+   return Invalid; //Column full
 }
 
 /**
@@ -51,7 +83,12 @@ Piece Piezas::dropPiece(int column)
 **/
 Piece Piezas::pieceAt(int row, int column)
 {
-    return Blank;
+    //Invalid entry
+    if(row >= BOARD_ROWS || row < 0 || column >= BOARD_COLS || column < 0){
+       return Invalid;
+    }
+    //Return piece (blank if empty)
+    return board[BOARD_ROWS-1-row][column];
 }
 
 /**
@@ -65,5 +102,84 @@ Piece Piezas::pieceAt(int row, int column)
 **/
 Piece Piezas::gameState()
 {
-    return Blank;
+     //make sure game is over
+     for(int i = 0; i < BOARD_ROWS; i++){
+        for(int j = 0; j < BOARD_COLS; j++){
+           if(board[i][j] == Blank){
+              return Invalid;
+           }
+        }
+     }
+     int xmax = 0;
+     int omax = 0;
+     int countx = 0, counto = 0;
+     //check rows
+//     std::cout << "Checking Rows" << std::endl;
+     for(int i = 0; i < BOARD_ROWS; i++){
+        for(int j = 0; j < BOARD_COLS; j++){
+           if(board[i][j] == X){
+              countx++;
+              counto = 0;
+              if(countx > xmax){
+                 xmax = countx;
+              }
+           }else{
+              counto++;
+              countx = 0;
+              if(counto > omax){
+                 omax = counto;
+              }
+           }
+//           std::cout << "X-count: " << xmax << std::endl;
+//           std::cout << "O-count: " << omax << std::endl;
+        }
+        countx = 0;
+        counto = 0;
+     }
+
+     //check columns
+//     std::cout << "Checking Columns" << std::endl;
+     for(int j = 0; j < BOARD_COLS; j++){
+        for(int i = 0; i < BOARD_ROWS; i++){
+           if(board[i][j] == X){
+              countx++;
+              counto = 0; 
+              if(countx > xmax){
+                 xmax = countx;
+              }
+
+           }else{
+              counto++;
+              countx = 0;
+              if(counto > omax){
+                 omax = counto;
+              }
+
+           }
+//           std::cout << "X-count: " << xmax << std::endl;
+//           std::cout << "O-count: " << omax << std::endl;
+        }
+        countx = 0;
+        counto = 0;
+     }
+
+
+     if(xmax > omax){
+        return X;
+     }
+     if(omax > xmax){
+        return O;
+     }
+        
+     return Blank; //tie
 }
+/*
+void Piezas::printboard(){
+   for(int i = 0; i < BOARD_ROWS; i++){
+        for(int j = 0; j < BOARD_COLS; j++){
+           std::cout << board[i][j] << " ";
+        }
+        std::cout << std::endl;
+   }
+}
+*/
